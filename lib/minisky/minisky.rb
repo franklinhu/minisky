@@ -20,12 +20,6 @@ class Minisky
       raise ArgumentError.new('must pass config file path or hash')
     end
 
-    if @config.any?
-      if user.id.nil? || user.pass.nil?
-        raise AuthError, "Missing user id or password #{user.id} #{user.pass}"
-      end
-    end
-
     if active_repl?
       @default_progress = '.'
     end
