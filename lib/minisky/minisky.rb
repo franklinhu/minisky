@@ -3,20 +3,27 @@ require 'yaml'
 class Minisky
   attr_reader :host, :config
 
-  def initialize(host, config_file, options = {})
+  def initialize(host, config_file_or_hash, options = {})
     @host = host
-    @config_file = config_file
 
-    if @config_file
+    case config_file_or_hash
+    when String
+      @config_file = config_file_or_hash
       @config = YAML.load(File.read(@config_file))
-
-      if user.id.nil? || user.pass.nil?
-        raise AuthError, "Missing user id or password in the config file #{@config_file}"
-      end
-    else
+    when Hash
+      @config = config_file_or_hash
+    when nil
       @config = {}
       @send_auth_headers = false
       @auto_manage_tokens = false
+    else
+      raise ArgumentError.new('must pass config file path or hash')
+    end
+
+    if @config.any?
+      if user.id.nil? || user.pass.nil?
+        raise AuthError, "Missing user id or password in the config file #{@config_file}"
+      end
     end
 
     if active_repl?
