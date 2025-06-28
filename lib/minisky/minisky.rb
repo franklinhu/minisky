@@ -22,7 +22,7 @@ class Minisky
 
     if @config.any?
       if user.id.nil? || user.pass.nil?
-        raise AuthError, "Missing user id or password in the config file #{@config_file}"
+        raise AuthError, "Missing user id or password #{user.id} #{user.pass}"
       end
     end
 
